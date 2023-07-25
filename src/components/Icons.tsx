@@ -1,8 +1,10 @@
 import {
+  Dribbble,
   Facebook,
   Instagram,
   Linkedin,
   LucideProps,
+  Mail,
   Twitter,
 } from "lucide-react"
 
@@ -28,6 +30,8 @@ const Icons = {
   linkedin: Linkedin,
   instagram: Instagram,
   facebook: Facebook,
+  dribbble: Dribbble,
+  mail: Mail,
 }
 
 export default Icons
