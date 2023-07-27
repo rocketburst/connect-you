@@ -1,5 +1,9 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import type { NextAuthOptions, DefaultSession } from "next-auth"
+import {
+  type NextAuthOptions,
+  type DefaultSession,
+  getServerSession,
+} from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import { env } from "@/env.mjs"
 import { db } from "@/lib/db"
@@ -29,4 +33,9 @@ export const authOptions: NextAuthOptions = {
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
   ],
+}
+
+export const getCurrentUser = async () => {
+  const session = await getServerSession(authOptions)
+  return session?.user
 }
