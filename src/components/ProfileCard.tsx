@@ -20,7 +20,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   profile: { name, description, mainlinks, socialLinks },
 }) => {
   return (
-    <div className="max-w-xl">
+    <div className="max-w-sm">
       <Card>
         <div className="mt-5 flex items-center justify-center">
           <Avatar>
@@ -31,7 +31,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
 
         <CardHeader className="-mt-1 text-center">
           <CardTitle>{name}</CardTitle>
-          <CardDescription>{description}</CardDescription>
+          <CardDescription className="break-all">{description}</CardDescription>
         </CardHeader>
 
         <CardContent>

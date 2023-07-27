@@ -10,7 +10,7 @@ const SocialIcon: React.FC<SocialIconProps> = ({ socialLink }) => {
   const Icon = Icons[socialLink.type]
 
   return (
-    <Button variant="outline" key={socialLink.type}>
+    <Button variant="outline" key={socialLink.type} className="px-3">
       <Icon className="h-4 w-4" />
     </Button>
   )
