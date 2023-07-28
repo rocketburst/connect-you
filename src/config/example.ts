@@ -35,8 +35,8 @@ export const exampleProfile: Profile = {
       href: "https://linkedin.com/",
     },
     {
-      type: SocialType.Dribbble,
-      href: "https://dribbble.com/shots",
+      type: SocialType.Instagram,
+      href: "https://instagram.com",
     },
   ],
 }

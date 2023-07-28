@@ -1,12 +1,4 @@
-import {
-  Dribbble,
-  Facebook,
-  Instagram,
-  Linkedin,
-  LucideProps,
-  Mail,
-  Twitter,
-} from "lucide-react"
+import { Instagram, Linkedin, LucideProps, Mail, Twitter } from "lucide-react"
 
 const Icons = {
   github: ({ ...props }: LucideProps) => (
@@ -29,8 +21,6 @@ const Icons = {
   twitter: Twitter,
   linkedin: Linkedin,
   instagram: Instagram,
-  facebook: Facebook,
-  dribbble: Dribbble,
   mail: Mail,
 }
 
