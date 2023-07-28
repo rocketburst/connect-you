@@ -6,8 +6,11 @@ interface SocialIconProps {
   socialLink: SocialLink
 }
 
+type SocialIconType = "github" | "twitter" | "linkedin" | "mail" | "instagram"
+
 const SocialIcon: React.FC<SocialIconProps> = ({ socialLink }) => {
-  const Icon = Icons[socialLink.type]
+  const type = socialLink.type.toString() as SocialIconType
+  const Icon = Icons[type]
 
   return (
     <Button variant="outline" key={socialLink.type} className="px-3">
