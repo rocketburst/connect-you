@@ -39,7 +39,11 @@ const defaultValues: Partial<ProfileFormValues> = {
   bio: "I own a computer.",
 }
 
-const ProfileEditForm = () => {
+interface ProfileFormProps {
+  children: React.ReactNode
+}
+
+const ProfileEditForm: React.FC<ProfileFormProps> = ({ children }) => {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
@@ -142,13 +146,7 @@ const ProfileEditForm = () => {
           )}
         />
 
-        <div>
-          <Button variant="outline">Add Main Link</Button>
-        </div>
-
-        <div>
-          <Button variant="outline">Link Socials</Button>
-        </div>
+        {children}
 
         <Button type="submit">Update profile</Button>
       </form>
