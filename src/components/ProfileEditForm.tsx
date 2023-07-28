@@ -13,8 +13,13 @@ import {
   FormMessage,
 } from "@/components/ui/Form"
 import { Input } from "@/components/ui/Input"
-import { Button } from "@/components/ui/Button"
+import { Button, buttonVariants } from "@/components/ui/Button"
 import { Textarea } from "@/components/ui/Textarea"
+import { Label } from "@/components/ui/Label"
+import { cn } from "@/lib/utils"
+import { useImgPreviewStore } from "@/stores/imgPreview"
+import { shallow } from "zustand/shallow"
+import { useModalStore } from "@/stores/modal"
 
 const profileFormSchema = z.object({
   name: z.string().min(2, {
@@ -30,7 +35,6 @@ const profileFormSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
-// This can come from your database or API.
 const defaultValues: Partial<ProfileFormValues> = {
   bio: "I own a computer.",
 }
@@ -41,12 +45,45 @@ const ProfileEditForm = () => {
     defaultValues,
     mode: "onChange",
   })
+  const [imgFile, setFile] = useImgPreviewStore(
+    (state) => [state.imgFile, state.setFile],
+    shallow
+  )
+  const [changeImgPreviewModalVisibility] = useModalStore(
+    (state) => [state.changeImgPreviewModalVisibility],
+    shallow
+  )
+
+  console.log(imgFile)
 
   const onSubmit = (data: ProfileFormValues) => {}
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <div>
+          <div className="grid w-full max-w-sm items-center gap-1.5">
+            <Label htmlFor="picture">Profile Picture</Label>
+            <Input
+              id="picture"
+              type="file"
+              onChange={(e) => setFile(e.target.files![0])}
+            />
+          </div>
+
+          {imgFile && (
+            <p
+              className={cn(
+                buttonVariants({ variant: "link" }),
+                "cursor-pointer px-0"
+              )}
+              onClick={() => changeImgPreviewModalVisibility()}
+            >
+              See preview
+            </p>
+          )}
+        </div>
+
         <FormField
           control={form.control}
           name="name"

@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar"
 import { Button } from "@/components/ui/Button"
 import { Profile } from "@/types"
 import Link from "next/link"
-import SocialIcon from "./SocialIcon"
+import SocialIcon from "@/components/SocialIcon"
 
 interface ProfileCardProps {
   profile: Profile

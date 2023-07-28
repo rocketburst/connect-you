@@ -1,3 +1,4 @@
+import Modals from "@/components/Modals"
 import { Separator } from "@/components/ui/Separator"
 import type { Metadata } from "next"
 
@@ -26,6 +27,8 @@ export default function EditLayout({
         <Separator className="my-6" />
 
         {children}
+
+        <Modals />
       </div>
     </div>
   )
