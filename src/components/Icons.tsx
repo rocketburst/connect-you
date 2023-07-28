@@ -1,4 +1,11 @@
-import { Instagram, Linkedin, LucideProps, Mail, Twitter } from "lucide-react"
+import {
+  Instagram,
+  Linkedin,
+  LucideProps,
+  Mail,
+  MoreHorizontal,
+  Twitter,
+} from "lucide-react"
 
 const Icons = {
   github: ({ ...props }: LucideProps) => (
@@ -22,6 +29,7 @@ const Icons = {
   linkedin: Linkedin,
   instagram: Instagram,
   mail: Mail,
+  menu: MoreHorizontal,
 }
 
 export default Icons
