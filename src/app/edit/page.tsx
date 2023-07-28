@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation"
-import MainLinksTable, { columns } from "@/components/MainLinksTable"
+import MainLinksTable from "@/components/MainLinksTable"
 import ProfileEditForm from "@/components/ProfileEditForm"
 import { buttonVariants } from "@/components/ui/Button"
 import { getCurrentUser } from "@/lib/auth"
@@ -17,7 +17,7 @@ const EditPage: React.FC = async () => {
       <div className="flex-1 md:min-w-[42rem] ">
         <ProfileEditForm>
           <div className="space-y-4">
-            <MainLinksTable columns={columns} data={mainLinks} />
+            <MainLinksTable data={mainLinks} />
 
             <p
               className={cn(

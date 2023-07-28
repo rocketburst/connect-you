@@ -1,22 +1,9 @@
 "use client"
 
 import { MainLink } from "@prisma/client"
+import { ColumnDef } from "@tanstack/react-table"
 
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/Table"
+import { DataTable } from "@/components/ui/DataTable"
 import { Button } from "@/components/ui/Button"
 import {
   DropdownMenu,
@@ -27,72 +14,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu"
 import Icons from "@/components/Icons"
-
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+interface MainLinksTableProps {
+  data: MainLink[]
 }
 
-export default function MainLinksTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  })
-
-  return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                )
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
-  )
-}
-
-export const columns: ColumnDef<MainLink>[] = [
+const columns: ColumnDef<MainLink>[] = [
   {
     accessorKey: "name",
     header: "Name",
@@ -132,3 +58,13 @@ export const columns: ColumnDef<MainLink>[] = [
     },
   },
 ]
+
+const MainLinksTable: React.FC<MainLinksTableProps> = ({ data }) => {
+  return (
+    <div className="hidden md:block">
+      <DataTable columns={columns} data={data} />
+    </div>
+  )
+}
+
+export default MainLinksTable
