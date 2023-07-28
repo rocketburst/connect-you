@@ -41,9 +41,10 @@ const defaultValues: Partial<ProfileFormValues> = {
 
 interface ProfileFormProps {
   children: React.ReactNode
+  type: "create" | "edit"
 }
 
-const ProfileEditForm: React.FC<ProfileFormProps> = ({ children }) => {
+const ProfileForm: React.FC<ProfileFormProps> = ({ children }) => {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
@@ -154,4 +155,4 @@ const ProfileEditForm: React.FC<ProfileFormProps> = ({ children }) => {
   )
 }
 
-export default ProfileEditForm
+export default ProfileForm
