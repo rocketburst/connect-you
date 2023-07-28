@@ -1,11 +1,12 @@
 import { redirect } from "next/navigation"
-import MainLinksTable from "@/components/MainLinksTable"
-import ProfileEditForm from "@/components/ProfileEditForm"
 import { buttonVariants } from "@/components/ui/Button"
 import { getCurrentUser } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { cn } from "@/lib/utils"
+import ProfileEditForm from "@/components/ProfileEditForm"
+import MainLinksTable from "@/components/MainLinksTable"
 import SocialLinksTable from "@/components/SocialLinksTable"
+import MainLinksCreateModal from "@/components/MainLinksCreateModal"
 
 const EditPage: React.FC = async () => {
   const user = await getCurrentUser()
@@ -22,15 +23,7 @@ const EditPage: React.FC = async () => {
         <ProfileEditForm>
           <div className="space-y-4">
             <MainLinksTable data={mainLinks} />
-
-            <p
-              className={cn(
-                buttonVariants({ variant: "outline" }),
-                "cursor-pointer"
-              )}
-            >
-              Add Main Link
-            </p>
+            <MainLinksCreateModal />
           </div>
 
           <div className="space-y-4">
