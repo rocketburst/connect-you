@@ -1,4 +1,4 @@
-import Modals from "@/components/Modals"
+import ImgPreviewModal from "@/components/ImgPreviewModal"
 import { Separator } from "@/components/ui/Separator"
 import type { Metadata } from "next"
 
@@ -28,7 +28,7 @@ export default function EditLayout({
 
         {children}
 
-        <Modals />
+        <ImgPreviewModal />
       </div>
     </div>
   )

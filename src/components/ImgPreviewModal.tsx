@@ -11,7 +11,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar"
 import { useImgPreviewStore } from "@/stores/imgPreview"
 
-const ImgPreviewModal = () => {
+const Modal = () => {
   const [isImgPreviewModalOpen, changeImgPreviewModalVisibility] =
     useModalStore(
       (state) => [
@@ -41,6 +41,12 @@ const ImgPreviewModal = () => {
       </DialogContent>
     </Dialog>
   )
+}
+
+const ImgPreviewModal: React.FC = () => {
+  const [imgFile] = useImgPreviewStore((state) => [state.imgFile], shallow)
+
+  return <>{imgFile && <Modal />}</>
 }
 
 export default ImgPreviewModal

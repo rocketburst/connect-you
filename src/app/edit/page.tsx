@@ -1,8 +1,6 @@
 import { redirect } from "next/navigation"
-import { buttonVariants } from "@/components/ui/Button"
 import { getCurrentUser } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { cn } from "@/lib/utils"
 import ProfileForm from "@/components/ProfileForn"
 import MainLinksTable from "@/components/MainLinksTable"
 import SocialLinksTable from "@/components/SocialLinksTable"
