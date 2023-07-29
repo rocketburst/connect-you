@@ -7,6 +7,7 @@ import ProfileForm from "@/components/ProfileForn"
 import MainLinksTable from "@/components/MainLinksTable"
 import SocialLinksTable from "@/components/SocialLinksTable"
 import MainLinksCreateModal from "@/components/MainLinksCreateModal"
+import SocialLinksCreateModal from "@/components/SocialLinksCreateModal"
 
 const EditPage: React.FC = async () => {
   const user = await getCurrentUser()
@@ -28,14 +29,7 @@ const EditPage: React.FC = async () => {
 
           <div className="space-y-4">
             <SocialLinksTable data={socialLinks} />
-            <p
-              className={cn(
-                buttonVariants({ variant: "outline" }),
-                "cursor-pointer"
-              )}
-            >
-              Add Social Profile
-            </p>
+            <SocialLinksCreateModal />
           </div>
         </ProfileForm>
       </div>
