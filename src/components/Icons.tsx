@@ -4,10 +4,19 @@ import {
   LucideProps,
   Mail,
   MoreHorizontal,
+  Pencil,
+  Trash,
   Twitter,
 } from "lucide-react"
 
 const Icons = {
+  twitter: Twitter,
+  linkedin: Linkedin,
+  instagram: Instagram,
+  mail: Mail,
+  menu: MoreHorizontal,
+  edit: Pencil,
+  delete: Trash,
   github: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"
@@ -25,11 +34,6 @@ const Icons = {
       ></path>
     </svg>
   ),
-  twitter: Twitter,
-  linkedin: Linkedin,
-  instagram: Instagram,
-  mail: Mail,
-  menu: MoreHorizontal,
 }
 
 export default Icons

@@ -36,7 +36,7 @@ const MainLinksCreateModal: React.FC = () => {
           </DialogDescription>
         </DialogHeader>
 
-        <MainLinksForm>
+        <MainLinksForm type="create">
           <DialogFooter>
             <Button type="submit">Create</Button>
           </DialogFooter>

@@ -25,9 +25,15 @@ const ResSchema = z.object({
 
 interface MainLinksFormProps {
   children?: React.ReactNode
+  type: "create" | "edit"
+  defaultValues?: z.infer<typeof FormSchema>
 }
 
-const MainLinksForm: React.FC<MainLinksFormProps> = ({ children }) => {
+const MainLinksForm: React.FC<MainLinksFormProps> = ({
+  children,
+  type,
+  defaultValues,
+}) => {
   const {
     register,
     handleSubmit,
@@ -35,6 +41,7 @@ const MainLinksForm: React.FC<MainLinksFormProps> = ({ children }) => {
     formState: { errors },
   } = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: defaultValues ?? { name: "", link: "" },
   })
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {

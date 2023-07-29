@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu"
 import Icons from "@/components/Icons"
+import MainLinksActionMenu from "./MainLinksActionMenu"
 interface MainLinksTableProps {
   data: MainLink[]
 }
@@ -31,30 +32,7 @@ const columns: ColumnDef<MainLink>[] = [
     id: "actions",
     cell: ({ row }) => {
       const mainLink = row.original
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <Icons.menu className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(mainLink.href)}
-            >
-              Copy link
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-
-            {/* TODO: implement later */}
-            <DropdownMenuItem>Edit Link</DropdownMenuItem>
-            <DropdownMenuItem>Delete Link</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
+      return <MainLinksActionMenu link={mainLink} />
     },
   },
 ]
