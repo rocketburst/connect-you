@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Input } from "@/components/ui/Input"
 import { Label } from "@/components/ui/Label"
 import { useForm } from "react-hook-form"
+import { MainLink } from "@prisma/client"
+import { toast } from "@/hooks/useToast"
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -16,6 +18,11 @@ const formSchema = z.object({
   }),
 })
 
+const resSchema = z.object({
+  message: z.custom<MainLink>().nullable(),
+  error: z.string().nullable(),
+})
+
 interface MainLinksFormProps {
   children?: React.ReactNode
 }
@@ -24,18 +31,33 @@ const MainLinksForm: React.FC<MainLinksFormProps> = ({ children }) => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "Name",
-      link: "https://www.youtube.com/",
-    },
   })
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // TODO: create main links
-    console.log(values)
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const { message, error } = await fetch("/api/links/main", {
+      method: "POST",
+      body: JSON.stringify(values),
+    })
+      .then((res) => res.json())
+      .then((data) => resSchema.parse(data))
+
+    if (message)
+      toast({
+        title: "Main Link Created",
+        description: `Successfully created link titled ${message.name}`,
+      })
+
+    if (error)
+      toast({
+        title: "Error",
+        description: "There was a problem with creating the link",
+      })
+
+    reset()
   }
 
   return (
@@ -46,7 +68,12 @@ const MainLinksForm: React.FC<MainLinksFormProps> = ({ children }) => {
             Name
           </Label>
 
-          <Input id="name" className="col-span-3" {...register("name")} />
+          <Input
+            id="name"
+            className="col-span-3"
+            placeholder="John Doe"
+            {...register("name")}
+          />
           {errors?.name && (
             <p className="px-1 text-xs text-red-600">{errors.name.message}</p>
           )}
@@ -57,7 +84,12 @@ const MainLinksForm: React.FC<MainLinksFormProps> = ({ children }) => {
             Link URL
           </Label>
 
-          <Input id="link" className="col-span-3" {...register("link")} />
+          <Input
+            id="link"
+            className="col-span-3"
+            placeholder="https://www.youtube.com/"
+            {...register("link")}
+          />
           {errors?.link && (
             <p className="px-1 text-xs text-red-600">{errors.link.message}</p>
           )}

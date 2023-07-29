@@ -59,8 +59,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ children }) => {
     shallow
   )
 
-  console.log(imgFile)
-
   const onSubmit = (data: ProfileFormValues) => {}
 
   return (

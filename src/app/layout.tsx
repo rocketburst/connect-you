@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/Toaster"
 import { fontHeading, fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import "@/styles/globals.css"
@@ -23,6 +24,8 @@ export default function RootLayout({
         )}
       >
         {children}
+
+        <Toaster />
       </body>
     </html>
   )
