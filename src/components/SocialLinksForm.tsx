@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { useRouter } from "next/navigation"
 import * as z from "zod"
 
 import {
@@ -20,7 +21,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select"
-import { Input } from "./ui/Input"
+import { Input } from "@/components/ui/Input"
+import { SocialLink } from "@prisma/client"
+import { toast } from "@/hooks/useToast"
 
 interface SocialLinksFormProps {
   children?: React.ReactNode
@@ -35,13 +38,38 @@ const FormSchema = z.object({
   }),
 })
 
+const ResSchema = z.object({
+  message: z.custom<SocialLink>().nullable(),
+  error: z.string().nullable(),
+})
+
 const SocialLinksForm: React.FC<SocialLinksFormProps> = ({ children }) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
+  const router = useRouter()
 
-  const onSubmit = (values: z.infer<typeof FormSchema>) => {
-    console.log(values)
+  const onSubmit = async ({ type, link }: z.infer<typeof FormSchema>) => {
+    const { message, error } = await fetch("/api/links/social", {
+      method: "POST",
+      body: JSON.stringify({ link, type: type.toUpperCase() }),
+    })
+      .then((res) => res.json())
+      .then((data) => ResSchema.parse(data))
+
+    if (message)
+      toast({
+        title: "Social Link Created",
+        description: `Successfully created ${type} link`,
+      })
+
+    if (error)
+      toast({
+        title: "Error",
+        description: "There was a problem with creating the link",
+      })
+
+    router.refresh()
   }
 
   return (
