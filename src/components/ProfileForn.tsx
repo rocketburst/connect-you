@@ -21,7 +21,7 @@ import { useImgPreviewStore } from "@/stores/imgPreview"
 import { shallow } from "zustand/shallow"
 import { useModalStore } from "@/stores/modal"
 
-const profileFormSchema = z.object({
+const ProfileFormSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
@@ -33,7 +33,7 @@ const profileFormSchema = z.object({
   bio: z.string().max(160).min(4),
 })
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>
+type ProfileFormValues = z.infer<typeof ProfileFormSchema>
 
 const defaultValues: Partial<ProfileFormValues> = {
   bio: "I own a computer.",
@@ -46,7 +46,7 @@ interface ProfileFormProps {
 
 const ProfileForm: React.FC<ProfileFormProps> = ({ children }) => {
   const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileFormSchema),
+    resolver: zodResolver(ProfileFormSchema),
     defaultValues,
     mode: "onChange",
   })

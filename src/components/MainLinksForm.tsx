@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form"
 import { MainLink } from "@prisma/client"
 import { toast } from "@/hooks/useToast"
 
-const formSchema = z.object({
+const FormSchema = z.object({
   name: z.string().min(2, {
     message: "Name of link must be at least 2 characters",
   }),
@@ -18,7 +18,7 @@ const formSchema = z.object({
   }),
 })
 
-const resSchema = z.object({
+const ResSchema = z.object({
   message: z.custom<MainLink>().nullable(),
   error: z.string().nullable(),
 })
@@ -33,17 +33,17 @@ const MainLinksForm: React.FC<MainLinksFormProps> = ({ children }) => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  } = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
   })
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof FormSchema>) => {
     const { message, error } = await fetch("/api/links/main", {
       method: "POST",
       body: JSON.stringify(values),
     })
       .then((res) => res.json())
-      .then((data) => resSchema.parse(data))
+      .then((data) => ResSchema.parse(data))
 
     if (message)
       toast({
