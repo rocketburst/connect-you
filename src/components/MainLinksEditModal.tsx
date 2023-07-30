@@ -49,7 +49,7 @@ const MainLinksEditModal: React.FC = () => {
           }}
         >
           <DialogFooter>
-            <Button type="submit">Create</Button>
+            <Button type="submit">Edit</Button>
           </DialogFooter>
         </MainLinksForm>
       </DialogContent>

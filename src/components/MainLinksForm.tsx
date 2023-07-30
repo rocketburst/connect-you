@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/Label"
 import { useForm } from "react-hook-form"
 import { MainLink } from "@prisma/client"
 import { toast } from "@/hooks/useToast"
+import { useRouter } from "next/navigation"
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -37,34 +38,55 @@ const MainLinksForm: React.FC<MainLinksFormProps> = ({
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: defaultValues ?? { name: "", link: "" },
   })
+  const router = useRouter()
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
-    const { message, error } = await fetch("/api/links/main", {
-      method: "POST",
-      body: JSON.stringify(values),
-    })
-      .then((res) => res.json())
-      .then((data) => ResSchema.parse(data))
-
-    if (message)
-      toast({
-        title: "Main Link Created",
-        description: `Successfully created link titled ${message.name}`,
+    if (type === "create") {
+      const { message, error } = await fetch("/api/links/main", {
+        method: "POST",
+        body: JSON.stringify(values),
       })
+        .then((res) => res.json())
+        .then((data) => ResSchema.parse(data))
 
-    if (error)
-      toast({
-        title: "Error",
-        description: "There was a problem with creating the link",
+      if (message)
+        toast({
+          title: "Main Link Created",
+          description: `Successfully created link titled ${message.name}`,
+        })
+
+      if (error)
+        toast({
+          title: "Error",
+          description: "There was a problem with creating the link",
+        })
+    } else {
+      const { message, error } = await fetch("/api/links/main", {
+        method: "PATCH",
+        body: JSON.stringify(values),
       })
+        .then((res) => res.json())
+        .then((data) => ResSchema.parse(data))
 
-    reset()
+      if (message)
+        toast({
+          title: "Main Link Updated",
+          description: `Successfully updated link titled ${message.name}`,
+        })
+
+      if (error)
+        toast({
+          title: "Error",
+          description: "There was a problem with updating the link",
+        })
+    }
+
+    router.refresh()
   }
 
   return (
