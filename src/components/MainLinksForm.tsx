@@ -72,6 +72,7 @@ const MainLinksForm: React.FC<MainLinksFormProps> = ({
         toast({
           title: "Error",
           description: "There was a problem with creating the link",
+          variant: "destructive",
         })
 
       setIsLoading(false)

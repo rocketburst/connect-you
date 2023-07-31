@@ -17,6 +17,8 @@ const PatchReqBodySchema = z.object({
   newValues: PostReqBodySchema.partial(),
 })
 
+const DeleteReqBodySchema = PostReqBodySchema
+
 export async function POST(req: NextRequest) {
   try {
     const { name, link } = await req
@@ -81,6 +83,39 @@ export async function PATCH(req: NextRequest) {
 
     return NextResponse.json(
       { message: updatedLink, error: null },
+      { status: 200 }
+    )
+  } catch (error) {
+    return NextResponse.json({ message: null, error }, { status: 500 })
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { name, link: href } = await req
+      .json()
+      .then((data) => DeleteReqBodySchema.parse(data))
+
+    const user = await getCurrentUser()
+    if (!user)
+      return NextResponse.json(
+        { message: null, error: "No user authenticated" },
+        { status: 401 }
+      )
+
+    const mainLink = await db.mainLink.findFirst({
+      where: { userId: user.id, name, href },
+    })
+    if (!mainLink)
+      return NextResponse.json(
+        { message: null, error: "Link not found" },
+        { status: 404 }
+      )
+
+    await db.mainLink.delete({ where: { id: mainLink.id } })
+
+    return NextResponse.json(
+      { message: `Link with name ${mainLink.name} deleted`, error: null },
       { status: 200 }
     )
   } catch (error) {

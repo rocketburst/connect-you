@@ -4,17 +4,7 @@ import { MainLink } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
 
 import { DataTable } from "@/components/ui/DataTable"
-import { Button } from "@/components/ui/Button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/DropdownMenu"
-import Icons from "@/components/Icons"
-import MainLinksActionMenu from "./MainLinksActionMenu"
+import MainLinksActionMenu from "@/components/MainLinksActionMenu"
 interface MainLinksTableProps {
   data: MainLink[]
 }
