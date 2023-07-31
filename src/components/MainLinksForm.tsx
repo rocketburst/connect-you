@@ -78,7 +78,10 @@ const MainLinksForm: React.FC<MainLinksFormProps> = ({
     } else {
       const { message, error } = await fetch("/api/links/main", {
         method: "PATCH",
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          originalValues: defaultValues,
+          newValues: values,
+        }),
       })
         .then((res) => res.json())
         .then((data) => ResSchema.parse(data))

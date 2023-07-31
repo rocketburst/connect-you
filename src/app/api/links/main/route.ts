@@ -12,7 +12,10 @@ const PostReqBodySchema = z.object({
   }),
 })
 
-const PatchReqBodySchema = PostReqBodySchema.partial()
+const PatchReqBodySchema = z.object({
+  originalValues: PostReqBodySchema,
+  newValues: PostReqBodySchema.partial(),
+})
 
 export async function POST(req: NextRequest) {
   try {
@@ -46,7 +49,7 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
-    const { name, link } = await req
+    const { originalValues, newValues } = await req
       .json()
       .then((data) => PatchReqBodySchema.parse(data))
 
@@ -58,7 +61,11 @@ export async function PATCH(req: NextRequest) {
       )
 
     const currentLink = await db.mainLink.findFirst({
-      where: { userId: user.id, name },
+      where: {
+        userId: user.id,
+        name: originalValues.name,
+        href: originalValues.link,
+      },
     })
 
     if (!currentLink)
@@ -69,7 +76,7 @@ export async function PATCH(req: NextRequest) {
 
     const updatedLink = await db.mainLink.update({
       where: { id: currentLink.id },
-      data: { name, href: link },
+      data: { name: newValues.name, href: newValues.link },
     })
 
     return NextResponse.json(
