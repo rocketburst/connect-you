@@ -67,6 +67,7 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({ children }) => {
       toast({
         title: "Error",
         description: "There was a problem with creating the link",
+        variant: "destructive",
       })
 
     router.refresh()
