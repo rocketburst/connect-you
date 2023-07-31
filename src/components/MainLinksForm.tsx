@@ -1,14 +1,16 @@
 "use client"
 
 import * as z from "zod"
+import { MainLink } from "@prisma/client"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { shallow } from "zustand/shallow"
+import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
 
+import { toast } from "@/hooks/useToast"
 import { Input } from "@/components/ui/Input"
 import { Label } from "@/components/ui/Label"
-import { useForm } from "react-hook-form"
-import { MainLink } from "@prisma/client"
-import { toast } from "@/hooks/useToast"
-import { useRouter } from "next/navigation"
+import { useFormLoadStore } from "@/stores/formLoad"
 
 const FormSchema = z.object({
   name: z.string().min(2, {
@@ -44,8 +46,14 @@ const MainLinksForm: React.FC<MainLinksFormProps> = ({
     defaultValues: defaultValues ?? { name: "", link: "" },
   })
   const router = useRouter()
+  const [setIsLoading] = useFormLoadStore(
+    (state) => [state.setIsLoading],
+    shallow
+  )
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
+    setIsLoading(true)
+
     if (type === "create") {
       const { message, error } = await fetch("/api/links/main", {
         method: "POST",
@@ -65,6 +73,8 @@ const MainLinksForm: React.FC<MainLinksFormProps> = ({
           title: "Error",
           description: "There was a problem with creating the link",
         })
+
+      setIsLoading(false)
     } else {
       const { message, error } = await fetch("/api/links/main", {
         method: "PATCH",
@@ -84,6 +94,8 @@ const MainLinksForm: React.FC<MainLinksFormProps> = ({
           title: "Error",
           description: "There was a problem with updating the link",
         })
+
+      setIsLoading(false)
     }
 
     router.refresh()

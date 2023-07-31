@@ -11,8 +11,10 @@ import {
   DialogTitle,
 } from "@/components/ui/Dialog"
 import { useModalStore } from "@/stores/modal"
-import MainLinksForm from "@/components/MainLinksForm"
 import { useLinksFormStore } from "@/stores/linksForm"
+import { useFormLoadStore } from "@/stores/formLoad"
+import MainLinksForm from "@/components/MainLinksForm"
+import Icons from "@/components/Icons"
 
 const MainLinksEditModal: React.FC = () => {
   const [isMainLinksEditModalOpen, changeMainLinksEditModalVisibility] =
@@ -27,6 +29,7 @@ const MainLinksEditModal: React.FC = () => {
     (state) => [state.mainLinksState],
     shallow
   )
+  const [isLoading] = useFormLoadStore((state) => [state.isLoading], shallow)
 
   return (
     <Dialog open={isMainLinksEditModalOpen} defaultOpen={false}>
@@ -49,7 +52,12 @@ const MainLinksEditModal: React.FC = () => {
           }}
         >
           <DialogFooter>
-            <Button type="submit">Edit</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading && (
+                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Edit
+            </Button>
           </DialogFooter>
         </MainLinksForm>
       </DialogContent>

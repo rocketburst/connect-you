@@ -1,6 +1,7 @@
 import {
   Instagram,
   Linkedin,
+  Loader2,
   LucideProps,
   Mail,
   MoreHorizontal,
@@ -17,6 +18,7 @@ const Icons = {
   menu: MoreHorizontal,
   edit: Pencil,
   delete: Trash,
+  spinner: Loader2,
   github: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"
