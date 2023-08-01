@@ -1,5 +1,6 @@
 import ImgPreviewModal from "@/components/ImgPreviewModal"
 import MainLinksEditModal from "@/components/MainLinksEditModal"
+import SocialLinksEditModal from "@/components/SocialLinksEditModal"
 import { Separator } from "@/components/ui/Separator"
 import type { Metadata } from "next"
 
@@ -30,6 +31,7 @@ export default function EditLayout({
         {children}
 
         <MainLinksEditModal />
+        <SocialLinksEditModal />
         <ImgPreviewModal />
       </div>
     </div>

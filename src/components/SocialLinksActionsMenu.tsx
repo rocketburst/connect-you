@@ -1,5 +1,6 @@
 "use client"
 
+import { shallow } from "zustand/shallow"
 import { SocialLink } from "@prisma/client"
 
 import { Button } from "@/components/ui/Button"
@@ -11,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu"
+import { useModalStore } from "@/stores/modal"
 import Icons from "@/components/Icons"
 
 interface SocialLinksActionsMenuProps {
@@ -20,6 +22,11 @@ interface SocialLinksActionsMenuProps {
 const SocialLinksActionsMenu: React.FC<SocialLinksActionsMenuProps> = ({
   link: { type, href },
 }) => {
+  const [changeSocialLinksEditModalVisibility] = useModalStore(
+    (state) => [state.changeSocialLinksEditModalVisibility],
+    shallow
+  )
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -36,7 +43,14 @@ const SocialLinksActionsMenu: React.FC<SocialLinksActionsMenuProps> = ({
         <DropdownMenuSeparator />
 
         {/* TODO: implement later */}
-        <DropdownMenuItem>Edit Link</DropdownMenuItem>
+        <DropdownMenuItem
+          onSelect={() => {
+            console.log("")
+            changeSocialLinksEditModalVisibility()
+          }}
+        >
+          Edit Link
+        </DropdownMenuItem>
         <DropdownMenuItem>Delete Link</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
