@@ -36,7 +36,7 @@ const SocialLinksCreateModal: React.FC = () => {
           </DialogDescription>
         </DialogHeader>
 
-        <SocialLinksForm>
+        <SocialLinksForm type="create">
           <DialogFooter>
             <Button type="submit">Create</Button>
           </DialogFooter>

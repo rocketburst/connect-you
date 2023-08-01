@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useRouter } from "next/navigation"
+import { shallow } from "zustand/shallow"
 import * as z from "zod"
 
 import {
@@ -24,9 +25,13 @@ import {
 import { Input } from "@/components/ui/Input"
 import { SocialLink } from "@prisma/client"
 import { toast } from "@/hooks/useToast"
+import { capitalize } from "@/lib/utils"
+import { useFormLoadStore } from "@/stores/formLoad"
 
 interface SocialLinksFormProps {
   children?: React.ReactNode
+  type: "create" | "edit"
+  defaultValues?: z.infer<typeof FormSchema>
 }
 
 const FormSchema = z.object({
@@ -43,32 +48,54 @@ const ResSchema = z.object({
   error: z.string().nullable(),
 })
 
-const SocialLinksForm: React.FC<SocialLinksFormProps> = ({ children }) => {
+const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
+  children,
+  type: formType,
+  defaultValues,
+}) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      link: defaultValues ? defaultValues.link : "",
+      type: defaultValues
+        ? capitalize(defaultValues.type.toLowerCase())
+        : "Desired Platform",
+    },
   })
+  const [setIsLoading] = useFormLoadStore(
+    (state) => [state.setIsLoading],
+    shallow
+  )
   const router = useRouter()
 
   const onSubmit = async ({ type, link }: z.infer<typeof FormSchema>) => {
-    const { message, error } = await fetch("/api/links/social", {
-      method: "POST",
-      body: JSON.stringify({ link, type: type.toUpperCase() }),
-    })
-      .then((res) => res.json())
-      .then((data) => ResSchema.parse(data))
+    setIsLoading(true)
 
-    if (message)
-      toast({
-        title: "Social Link Created",
-        description: `Successfully created ${type} link`,
+    if (formType === "create") {
+      const { message, error } = await fetch("/api/links/social", {
+        method: "POST",
+        body: JSON.stringify({ link, type: type.toUpperCase() }),
       })
+        .then((res) => res.json())
+        .then((data) => ResSchema.parse(data))
 
-    if (error)
-      toast({
-        title: "Error",
-        description: "There was a problem with creating the link",
-        variant: "destructive",
-      })
+      if (message)
+        toast({
+          title: "Social Link Created",
+          description: `Successfully created ${type} link`,
+        })
+
+      if (error)
+        toast({
+          title: "Error",
+          description: "There was a problem with creating the link",
+          variant: "destructive",
+        })
+
+      setIsLoading(false)
+    } else {
+      setIsLoading(false)
+    }
 
     router.refresh()
   }
@@ -93,7 +120,7 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({ children }) => {
                   <SelectItem value="Twitter">Twitter</SelectItem>
                   <SelectItem value="Instagram">Instagram</SelectItem>
                   <SelectItem value="LinkedIn">LinkedIn</SelectItem>
-                  <SelectItem value="GitHub">GitHub</SelectItem>
+                  <SelectItem value="Github">Github</SelectItem>
                 </SelectContent>
               </Select>
 

@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu"
 import { useModalStore } from "@/stores/modal"
+import { useLinksFormStore } from "@/stores/linksForm"
 import Icons from "@/components/Icons"
 
 interface SocialLinksActionsMenuProps {
@@ -24,6 +25,10 @@ const SocialLinksActionsMenu: React.FC<SocialLinksActionsMenuProps> = ({
 }) => {
   const [changeSocialLinksEditModalVisibility] = useModalStore(
     (state) => [state.changeSocialLinksEditModalVisibility],
+    shallow
+  )
+  const [setSocialLinksState] = useLinksFormStore(
+    (state) => [state.setSocialLinksState],
     shallow
   )
 
@@ -46,6 +51,7 @@ const SocialLinksActionsMenu: React.FC<SocialLinksActionsMenuProps> = ({
         <DropdownMenuItem
           onSelect={() => {
             console.log("")
+            setSocialLinksState({ type, href })
             changeSocialLinksEditModalVisibility()
           }}
         >
