@@ -91,12 +91,32 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
           description: "There was a problem with creating the link",
           variant: "destructive",
         })
-
-      setIsLoading(false)
     } else {
-      setIsLoading(false)
+      const { message, error } = await fetch("/api/links/social", {
+        method: "PATCH",
+        body: JSON.stringify({
+          originalValues: defaultValues,
+          newValues: { link, type: type.toUpperCase() },
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => ResSchema.parse(data))
+
+      if (message)
+        toast({
+          title: "Social Link Created",
+          description: `Successfully created ${type} link`,
+        })
+
+      if (error)
+        toast({
+          title: "Error",
+          description: "There was a problem with creating the link",
+          variant: "destructive",
+        })
     }
 
+    setIsLoading(false)
     router.refresh()
   }
 
