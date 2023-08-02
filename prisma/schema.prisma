@@ -82,6 +82,5 @@ enum SocialLinkType {
   TWITTER
   INSTAGRAM
   LINKEDIN
-  MAIL
   GITHUB
 }

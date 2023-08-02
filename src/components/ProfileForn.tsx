@@ -20,6 +20,8 @@ import { cn } from "@/lib/utils"
 import { useImgPreviewStore } from "@/stores/imgPreview"
 import { shallow } from "zustand/shallow"
 import { useModalStore } from "@/stores/modal"
+import { useState } from "react"
+import Icons from "@/components/Icons"
 
 const ProfileFormSchema = z.object({
   name: z.string().min(2, {
@@ -27,7 +29,7 @@ const ProfileFormSchema = z.object({
   }),
   email: z
     .string({
-      required_error: "Please select an email to display.",
+      required_error: "Please write an email to display.",
     })
     .email(),
   bio: z.string().max(160).min(4),
@@ -36,7 +38,7 @@ const ProfileFormSchema = z.object({
 type ProfileFormValues = z.infer<typeof ProfileFormSchema>
 
 const defaultValues: Partial<ProfileFormValues> = {
-  bio: "I own a computer.",
+  bio: "I am him. Aren't I?",
 }
 
 interface ProfileFormProps {
@@ -44,7 +46,7 @@ interface ProfileFormProps {
   type: "create" | "edit"
 }
 
-const ProfileForm: React.FC<ProfileFormProps> = ({ children }) => {
+const ProfileForm: React.FC<ProfileFormProps> = ({ children, type }) => {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(ProfileFormSchema),
     defaultValues,
@@ -58,6 +60,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ children }) => {
     (state) => [state.changeImgPreviewModalVisibility],
     shallow
   )
+  const [isLoading, setIsLoading] = useState(false)
 
   const onSubmit = (data: ProfileFormValues) => {}
 
@@ -95,7 +98,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ children }) => {
               <FormLabel>Name</FormLabel>
               <FormControl>
                 <div className="flex items-center">
-                  <Input placeholder="shadcn" {...field} />
+                  <Input placeholder="John Doe" {...field} />
                 </div>
               </FormControl>
               <FormDescription>
@@ -116,7 +119,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ children }) => {
                 <Input placeholder="example@gmail.com" {...field} />
               </FormControl>
               <FormDescription>
-                This is your email that will be displayed with the mail icon.
+                This is your email that will be displayed.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -136,10 +139,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ children }) => {
                   {...field}
                 />
               </FormControl>
-              <FormDescription>
-                You can <span>@mention</span> other users and organizations to
-                link to them.
-              </FormDescription>
+              <FormDescription>All about yourself.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -147,7 +147,10 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ children }) => {
 
         {children}
 
-        <Button type="submit">Update profile</Button>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading && <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />}
+          {type === "create" ? "Create Profile" : "Update profile"}
+        </Button>
       </form>
     </Form>
   )
