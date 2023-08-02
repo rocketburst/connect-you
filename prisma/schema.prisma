@@ -49,6 +49,7 @@ model User {
   sessions      Session[]
   mainLinks     MainLink[]
   socialLinks   SocialLink[]
+  Profile       Profile?
 
   @@map("Users")
 }
@@ -60,6 +61,16 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("Verification Tokens")
+}
+
+model Profile {
+  id         String @id @default(cuid())
+  name       String
+  email      String
+  bio        String
+  uniqueHref String @unique
+  user       User   @relation(fields: [userId], references: [id])
+  userId     String @unique
 }
 
 model MainLink {

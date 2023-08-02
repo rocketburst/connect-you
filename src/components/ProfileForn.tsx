@@ -32,14 +32,19 @@ const ProfileFormSchema = z.object({
       required_error: "Please write an email to display.",
     })
     .email(),
+  unqiueHref: z
+    .string({
+      required_error: "Please use a unqiue identifier.",
+    })
+    .min(4)
+    .trim()
+    .regex(/^[a-zA-Z0-9]/, {
+      message: "Must only use alphanumeric characters",
+    }),
   bio: z.string().max(160).min(4),
 })
 
 type ProfileFormValues = z.infer<typeof ProfileFormSchema>
-
-const defaultValues: Partial<ProfileFormValues> = {
-  bio: "I am him. Aren't I?",
-}
 
 interface ProfileFormProps {
   children: React.ReactNode
@@ -49,7 +54,6 @@ interface ProfileFormProps {
 const ProfileForm: React.FC<ProfileFormProps> = ({ children, type }) => {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(ProfileFormSchema),
-    defaultValues,
     mode: "onChange",
   })
   const [imgFile, setFile] = useImgPreviewStore(
@@ -128,6 +132,23 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ children, type }) => {
 
         <FormField
           control={form.control}
+          name="unqiueHref"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Unqiue Identifier</FormLabel>
+              <FormControl>
+                <Input placeholder="johndoe" {...field} />
+              </FormControl>
+              <FormDescription>
+                This will be used for the link of your Connect You Card.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
           name="bio"
           render={({ field }) => (
             <FormItem>
@@ -139,7 +160,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ children, type }) => {
                   {...field}
                 />
               </FormControl>
-              <FormDescription>All about yourself.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
