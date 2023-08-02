@@ -1,5 +1,6 @@
 import { getCurrentUser } from "@/lib/auth"
 import { db } from "@/lib/db"
+import { capitalize } from "@/lib/utils"
 import { NextRequest, NextResponse } from "next/server"
 import * as z from "zod"
 
@@ -14,6 +15,8 @@ const PatchReqBodySchema = z.object({
   originalValues: PostReqBodySchema,
   newValues: PostReqBodySchema.partial(),
 })
+
+const DeleteReqBodySchema = PostReqBodySchema
 
 export async function POST(req: NextRequest) {
   try {
@@ -88,6 +91,44 @@ export async function PATCH(req: NextRequest) {
 
     return NextResponse.json(
       { message: updatedLink, error: null },
+      { status: 200 }
+    )
+  } catch (error) {
+    return NextResponse.json({ message: null, error }, { status: 500 })
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { type, link: href } = await req
+      .json()
+      .then((data) => DeleteReqBodySchema.parse(data))
+
+    const user = await getCurrentUser()
+    if (!user)
+      return NextResponse.json(
+        { message: null, error: "No user authenticated" },
+        { status: 401 }
+      )
+
+    const socialLink = await db.socialLink.findFirst({
+      where: { userId: user.id, type, href },
+    })
+    if (!socialLink)
+      return NextResponse.json(
+        { message: null, error: "Link not found" },
+        { status: 404 }
+      )
+
+    await db.socialLink.delete({ where: { id: socialLink.id } })
+
+    return NextResponse.json(
+      {
+        message: `Link with name ${capitalize(
+          socialLink.type.toLowerCase()
+        )} deleted`,
+        error: null,
+      },
       { status: 200 }
     )
   } catch (error) {

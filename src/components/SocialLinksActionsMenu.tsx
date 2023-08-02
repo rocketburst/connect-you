@@ -2,6 +2,9 @@
 
 import { shallow } from "zustand/shallow"
 import { SocialLink } from "@prisma/client"
+import { toast } from "@/hooks/useToast"
+import { useRouter } from "next/navigation"
+import * as z from "zod"
 
 import { Button } from "@/components/ui/Button"
 import {
@@ -20,6 +23,11 @@ interface SocialLinksActionsMenuProps {
   link: SocialLink
 }
 
+const ResSchema = z.object({
+  message: z.string().nullable(),
+  error: z.string().nullable(),
+})
+
 const SocialLinksActionsMenu: React.FC<SocialLinksActionsMenuProps> = ({
   link: { type, href },
 }) => {
@@ -31,6 +39,31 @@ const SocialLinksActionsMenu: React.FC<SocialLinksActionsMenuProps> = ({
     (state) => [state.setSocialLinksState],
     shallow
   )
+  const router = useRouter()
+
+  const deleteLink = async () => {
+    const { message, error } = await fetch("/api/links/social", {
+      method: "DELETE",
+      body: JSON.stringify({ type, link: href }),
+    })
+      .then((res) => res.json())
+      .then((data) => ResSchema.parse(data))
+
+    if (message)
+      toast({
+        title: "Main Link Deleted",
+        description: `Successfully deleted link titled ${type}`,
+      })
+
+    if (error)
+      toast({
+        title: "Error",
+        description: "There was a problem with deleting the link",
+        variant: "destructive",
+      })
+
+    router.refresh()
+  }
 
   return (
     <DropdownMenu>
@@ -47,7 +80,6 @@ const SocialLinksActionsMenu: React.FC<SocialLinksActionsMenuProps> = ({
         </DropdownMenuItem>
         <DropdownMenuSeparator />
 
-        {/* TODO: implement later */}
         <DropdownMenuItem
           onSelect={() => {
             console.log("")
@@ -57,7 +89,9 @@ const SocialLinksActionsMenu: React.FC<SocialLinksActionsMenuProps> = ({
         >
           Edit Link
         </DropdownMenuItem>
-        <DropdownMenuItem>Delete Link</DropdownMenuItem>
+        <DropdownMenuItem onSelect={() => deleteLink()}>
+          Delete Link
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
