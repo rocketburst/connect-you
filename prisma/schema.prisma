@@ -64,13 +64,14 @@ model VerificationToken {
 }
 
 model Profile {
-  id         String @id @default(cuid())
+  id         String  @id @default(cuid())
   name       String
   email      String
+  image      String?
   bio        String
-  uniqueHref String @unique
-  user       User   @relation(fields: [userId], references: [id])
-  userId     String @unique
+  uniqueHref String  @unique
+  user       User    @relation(fields: [userId], references: [id])
+  userId     String  @unique
 }
 
 model MainLink {

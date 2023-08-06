@@ -1,8 +1,10 @@
 "use client"
 
+import * as z from "zod"
+import Icons from "@/components/Icons"
+import { Profile } from "@prisma/client"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import * as z from "zod"
 import {
   Form,
   FormControl,
@@ -21,7 +23,7 @@ import { useImgPreviewStore } from "@/stores/imgPreview"
 import { shallow } from "zustand/shallow"
 import { useModalStore } from "@/stores/modal"
 import { useState } from "react"
-import Icons from "@/components/Icons"
+import { toast } from "@/hooks/useToast"
 
 const ProfileFormSchema = z.object({
   name: z.string().min(2, {
@@ -32,7 +34,7 @@ const ProfileFormSchema = z.object({
       required_error: "Please write an email to display.",
     })
     .email(),
-  unqiueHref: z
+  uniqueHref: z
     .string({
       required_error: "Please use a unqiue identifier.",
     })
@@ -42,6 +44,11 @@ const ProfileFormSchema = z.object({
       message: "Must only use alphanumeric characters",
     }),
   bio: z.string().max(160).min(4),
+})
+
+const ResSchema = z.object({
+  message: z.custom<Profile>().nullable(),
+  error: z.string().nullable(),
 })
 
 type ProfileFormValues = z.infer<typeof ProfileFormSchema>
@@ -66,7 +73,34 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ children, type }) => {
   )
   const [isLoading, setIsLoading] = useState(false)
 
-  const onSubmit = (data: ProfileFormValues) => {}
+  const onSubmit = async (values: ProfileFormValues) => {
+    setIsLoading(true)
+
+    if (type === "create") {
+      const { name, email, bio, uniqueHref } = values
+      const { message, error } = await fetch("/api/profile", {
+        method: "POST",
+        body: JSON.stringify({ name, bio, email, uniqueHref }),
+      })
+        .then((res) => res.json())
+        .then((data) => ResSchema.parse(data))
+
+      if (message)
+        toast({
+          title: "Profile Created",
+          description: `Successfully created profile for ${message.name}`,
+        })
+
+      if (error)
+        toast({
+          title: "Error",
+          description: "There was a problem with creating the profile",
+          variant: "destructive",
+        })
+
+      setIsLoading(false)
+    }
+  }
 
   return (
     <Form {...form}>
@@ -132,7 +166,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ children, type }) => {
 
         <FormField
           control={form.control}
-          name="unqiueHref"
+          name="uniqueHref"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Unqiue Identifier</FormLabel>
