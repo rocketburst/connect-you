@@ -24,6 +24,7 @@ import { shallow } from "zustand/shallow"
 import { useModalStore } from "@/stores/modal"
 import { useState } from "react"
 import { toast } from "@/hooks/useToast"
+import { uploadFiles } from "@/lib/uploadthing"
 
 const ProfileFormSchema = z.object({
   name: z.string().min(2, {
@@ -77,10 +78,21 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ children, type }) => {
     setIsLoading(true)
 
     if (type === "create") {
+      let image: string
+      if (imgFile) {
+        const [res] = await uploadFiles({
+          files: [imgFile],
+          endpoint: "imageUploader",
+        })
+        image = res.fileUrl
+      } else {
+        image = ""
+      }
+
       const { name, email, bio, uniqueHref } = values
       const { message, error } = await fetch("/api/profile", {
         method: "POST",
-        body: JSON.stringify({ name, bio, email, uniqueHref }),
+        body: JSON.stringify({ name, bio, email, uniqueHref, image }),
       })
         .then((res) => res.json())
         .then((data) => ResSchema.parse(data))

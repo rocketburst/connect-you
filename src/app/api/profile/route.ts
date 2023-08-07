@@ -14,11 +14,12 @@ const PostReqBodySchema = z.object({
   uniqueHref: z.string().min(2, {
     message: "Unique Identifier must be at least 2 characters",
   }),
+  image: z.string().min(2).url().optional(),
 })
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, bio, uniqueHref } = await req
+    const { name, email, bio, uniqueHref, image } = await req
       .json()
       .then((data) => PostReqBodySchema.parse(data))
 
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
       )
 
     const createdProfile = await db.profile.create({
-      data: { name, email, bio, uniqueHref, userId: user.id },
+      data: { name, email, bio, uniqueHref, image, userId: user.id },
     })
 
     return NextResponse.json(
