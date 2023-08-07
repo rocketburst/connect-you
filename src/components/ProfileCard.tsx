@@ -54,14 +54,25 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             </div>
           </div>
 
-          <p
-            className={cn(
-              buttonVariants({ variant: "link" }),
-              "cursor-pointer -mb-3 mt-3 text-right"
-            )}
-          >
-            Email me here {"-->"}
-          </p>
+          <div className="flex">
+            <p
+              className={cn(
+                buttonVariants({ variant: "ghost" }),
+                "-mb-3 mt-3 cursor-pointer text-right"
+              )}
+            >
+              Email {"-->"}
+            </p>
+
+            <p
+              className={cn(
+                buttonVariants({ variant: "ghost" }),
+                "-mb-3 mt-3 cursor-pointer text-right"
+              )}
+            >
+              Make Your Own
+            </p>
+          </div>
         </CardFooter>
       </Card>
     </div>
