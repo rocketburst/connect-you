@@ -1,4 +1,4 @@
-import { SocialLink } from "@/types"
+import { SocialLink } from "@prisma/client"
 import { Button } from "@/components/ui/Button"
 import Icons from "@/components/Icons"
 
@@ -9,7 +9,7 @@ interface SocialIconProps {
 type SocialIconType = "github" | "twitter" | "linkedin" | "mail" | "instagram"
 
 const SocialIcon: React.FC<SocialIconProps> = ({ socialLink }) => {
-  const type = socialLink.type.toString() as SocialIconType
+  const type = socialLink.type.toString().toLowerCase() as SocialIconType
   const Icon = Icons[type]
 
   return (

@@ -1,10 +1,9 @@
-import ProfileCard from "@/components/ProfileCard"
-import { exampleProfile } from "@/config/example"
+import ExampleProfileCard from "@/components/ExampleProfileCard"
 
 const Example: React.FC = () => {
   return (
     <div className="flex h-screen flex-col items-center justify-center">
-      <ProfileCard profile={exampleProfile} />
+      <ExampleProfileCard />
     </div>
   )
 }

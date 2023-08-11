@@ -30,6 +30,15 @@ export async function POST(req: NextRequest) {
         { status: 401 }
       )
 
+    const existingProfile = await db.profile.findFirst({
+      where: { userId: user.id, uniqueHref },
+    })
+    if (existingProfile)
+      return NextResponse.json(
+        { message: null, error: "Profile already exists" },
+        { status: 500 }
+      )
+
     const createdProfile = await db.profile.create({
       data: { name, email, bio, uniqueHref, image, userId: user.id },
     })
