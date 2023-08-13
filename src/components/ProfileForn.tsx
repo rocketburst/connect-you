@@ -25,6 +25,7 @@ import { useModalStore } from "@/stores/modal"
 import { useState } from "react"
 import { toast } from "@/hooks/useToast"
 import { uploadFiles } from "@/lib/uploadthing"
+import Link from "next/link"
 
 const ProfileFormSchema = z.object({
   name: z.string().min(2, {
@@ -57,12 +58,18 @@ type ProfileFormValues = z.infer<typeof ProfileFormSchema>
 interface ProfileFormProps {
   children: React.ReactNode
   type: "create" | "edit"
+  defaultValues?: Partial<ProfileFormValues> & { image?: string }
 }
 
-const ProfileForm: React.FC<ProfileFormProps> = ({ children, type }) => {
+const ProfileForm: React.FC<ProfileFormProps> = ({
+  children,
+  type,
+  defaultValues,
+}) => {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(ProfileFormSchema),
     mode: "onChange",
+    defaultValues: defaultValues ?? {},
   })
   const [imgFile, setFile] = useImgPreviewStore(
     (state) => [state.imgFile, state.setFile],
@@ -75,21 +82,34 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ children, type }) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const onSubmit = async (values: ProfileFormValues) => {
+    const isRouteName =
+      values.uniqueHref === "example" ||
+      values.uniqueHref === "create" ||
+      values.uniqueHref === "edit" ||
+      values.uniqueHref === "sign-in"
+
+    if (isRouteName)
+      return toast({
+        title: "Error",
+        description:
+          "The unique identifier can't be a critical route on this site!",
+        variant: "destructive",
+      })
+
     setIsLoading(true)
 
-    if (type === "create") {
-      let image: string
-      if (imgFile) {
-        const [res] = await uploadFiles({
-          files: [imgFile],
-          endpoint: "imageUploader",
-        })
-        image = res.fileUrl
-      } else {
-        image = ""
-      }
+    let image: string
+    if (imgFile) {
+      const [res] = await uploadFiles({
+        files: [imgFile],
+        endpoint: "imageUploader",
+      })
+      image = res.fileUrl
+    } else image = ""
 
-      const { name, email, bio, uniqueHref } = values
+    const { name, email, bio, uniqueHref } = values
+
+    if (type === "create") {
       const { message, error } = await fetch("/api/profile", {
         method: "POST",
         body: JSON.stringify({ name, bio, email, uniqueHref, image }),
@@ -111,6 +131,26 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ children, type }) => {
         })
 
       setIsLoading(false)
+    } else {
+      const { message, error } = await fetch("/api/profile", {
+        method: "PATCH",
+        body: JSON.stringify({ name, bio, email, uniqueHref, image }),
+      })
+        .then((res) => res.json())
+        .then((data) => ResSchema.parse(data))
+
+      if (message)
+        toast({
+          title: "Profile Updated",
+          description: `Successfully updated profile for ${message.name}`,
+        })
+
+      if (error)
+        toast({
+          title: "Error",
+          description: "There was a problem with updating the profile",
+          variant: "destructive",
+        })
     }
   }
 
@@ -126,6 +166,19 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ children, type }) => {
               onChange={(e) => setFile(e.target.files![0])}
             />
           </div>
+
+          {defaultValues?.image && (
+            <Link href={defaultValues.image} target="_blank">
+              <p
+                className={cn(
+                  buttonVariants({ variant: "link" }),
+                  "cursor-pointer px-0"
+                )}
+              >
+                See current profile pic
+              </p>
+            </Link>
+          )}
 
           {imgFile && (
             <p

@@ -22,7 +22,7 @@ const ProfileCard: React.FC<ProfileCardProps> = async ({ profileHref }) => {
   const profile = await db.profile.findFirst({
     where: { uniqueHref: profileHref },
   })
-  if (!profile) redirect("/create")
+  if (!profile) notFound()
 
   const user = await db.user.findFirst({
     where: { id: profile.userId },

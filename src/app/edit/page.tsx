@@ -11,6 +11,10 @@ const EditPage: React.FC = async () => {
   const user = await getCurrentUser()
   if (!user) redirect("/sign-in")
 
+  const profile = await db.profile.findFirst({ where: { userId: user.id } })
+  if (!profile) redirect("/create")
+
+  const { name, bio, email, image, uniqueHref } = profile
   const mainLinks = await db.mainLink.findMany({ where: { userId: user?.id } })
   const socialLinks = await db.socialLink.findMany({
     where: { userId: user?.id },
@@ -19,7 +23,10 @@ const EditPage: React.FC = async () => {
   return (
     <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
       <div className="flex-1 md:min-w-[42rem] ">
-        <ProfileForm type="edit">
+        <ProfileForm
+          type="edit"
+          defaultValues={{ name, bio, email, uniqueHref, image: image ?? "" }}
+        >
           <div className="space-y-4">
             <MainLinksTable data={mainLinks} />
             <MainLinksCreateModal />
