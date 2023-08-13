@@ -13,15 +13,17 @@ import {
 import { Button } from "@/components/ui/Button"
 import { toast } from "@/hooks/useToast"
 import Icons from "@/components/Icons"
+import { useRouter } from "next/navigation"
 
 const UserAuthCard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   const login = async () => {
     setIsLoading(true)
 
     try {
-      await signIn("google")
+      await signIn("google").then(() => router.push("/create"))
     } catch (error) {
       toast({
         title: "Error",

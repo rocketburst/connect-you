@@ -11,6 +11,9 @@ const CreatePage: React.FC = async () => {
   const user = await getCurrentUser()
   if (!user) redirect("/sign-in")
 
+  const profile = await db.profile.findFirst({ where: { userId: user.id } })
+  if (profile) redirect("/edit")
+
   const mainLinks = await db.mainLink.findMany({ where: { userId: user?.id } })
   const socialLinks = await db.socialLink.findMany({
     where: { userId: user?.id },

@@ -55,7 +55,13 @@ const ProfileCard: React.FC<ProfileCardProps> = async ({ profile }) => {
           <div className="flex items-center justify-center">
             <div className="space-x-3">
               {socialLinks.map((socialLink) => (
-                <SocialIcon socialLink={socialLink} key={socialLink.type} />
+                <Link
+                  href={socialLink.href}
+                  key={socialLink.type}
+                  target="_blank"
+                >
+                  <SocialIcon socialLink={socialLink} />
+                </Link>
               ))}
             </div>
           </div>
@@ -67,7 +73,7 @@ const ProfileCard: React.FC<ProfileCardProps> = async ({ profile }) => {
                 "-mb-3 mt-3 cursor-pointer text-right"
               )}
             >
-              Email {"-->"}
+              <Link href={`mailto:${profile.email}`}>Email {"-->"}</Link>
             </p>
 
             <p
@@ -76,7 +82,7 @@ const ProfileCard: React.FC<ProfileCardProps> = async ({ profile }) => {
                 "-mb-3 mt-3 cursor-pointer text-right"
               )}
             >
-              Make Your Own
+              <Link href="/sign-in">Make Your Own</Link>
             </p>
           </div>
         </CardFooter>
