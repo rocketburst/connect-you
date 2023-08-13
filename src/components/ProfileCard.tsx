@@ -1,3 +1,4 @@
+import { notFound, redirect } from "next/navigation"
 import {
   Card,
   CardContent,
@@ -8,22 +9,31 @@ import {
 } from "@/components/ui/Card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar"
 import { Button, buttonVariants } from "@/components/ui/Button"
-import Link from "next/link"
-import SocialIcon from "@/components/SocialIcon"
 import { cn } from "@/lib/utils"
-import { MainLink, Profile, SocialLink } from "@prisma/client"
+import { db } from "@/lib/db"
+import SocialIcon from "@/components/SocialIcon"
+import Link from "next/link"
 
 interface ProfileCardProps {
-  profile: Profile
-  mainLinks: MainLink[]
-  socialLinks: SocialLink[]
+  profileHref: string
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = ({
-  profile: { name, bio, email },
-  mainLinks,
-  socialLinks,
-}) => {
+const ProfileCard: React.FC<ProfileCardProps> = async ({ profileHref }) => {
+  const profile = await db.profile.findFirst({
+    where: { uniqueHref: profileHref },
+  })
+  if (!profile) redirect("/create")
+
+  const user = await db.user.findFirst({
+    where: { id: profile.userId },
+  })
+  if (!user) return notFound()
+
+  const mainLinks = await db.mainLink.findMany({ where: { userId: user.id } })
+  const socialLinks = await db.socialLink.findMany({
+    where: { userId: user?.id },
+  })
+
   return (
     <div className="max-w-sm">
       <Card>
@@ -35,8 +45,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         </div>
 
         <CardHeader className="-mt-1 text-center">
-          <CardTitle>{name}</CardTitle>
-          <CardDescription className="break-all">{bio}</CardDescription>
+          <CardTitle>{profile.name}</CardTitle>
+          <CardDescription className="break-all">{profile.bio}</CardDescription>
         </CardHeader>
 
         <CardContent>
