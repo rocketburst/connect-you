@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation"
+import { Profile } from "@prisma/client"
 import {
   Card,
   CardContent,
@@ -15,23 +15,15 @@ import SocialIcon from "@/components/SocialIcon"
 import Link from "next/link"
 
 interface ProfileCardProps {
-  profileHref: string
+  profile: Profile
 }
 
-const ProfileCard: React.FC<ProfileCardProps> = async ({ profileHref }) => {
-  const profile = await db.profile.findFirst({
-    where: { uniqueHref: profileHref },
+const ProfileCard: React.FC<ProfileCardProps> = async ({ profile }) => {
+  const mainLinks = await db.mainLink.findMany({
+    where: { userId: profile.userId },
   })
-  if (!profile) notFound()
-
-  const user = await db.user.findFirst({
-    where: { id: profile.userId },
-  })
-  if (!user) return notFound()
-
-  const mainLinks = await db.mainLink.findMany({ where: { userId: user.id } })
   const socialLinks = await db.socialLink.findMany({
-    where: { userId: user?.id },
+    where: { userId: profile.userId },
   })
 
   return (
