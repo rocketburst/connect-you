@@ -25,6 +25,7 @@ import { useModalStore } from "@/stores/modal"
 import { useState } from "react"
 import { toast } from "@/hooks/useToast"
 import { uploadFiles } from "@/lib/uploadthing"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 
 const ProfileFormSchema = z.object({
@@ -80,6 +81,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
     shallow
   )
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   const onSubmit = async (values: ProfileFormValues) => {
     const isRouteName =
@@ -117,11 +119,13 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         .then((res) => res.json())
         .then((data) => ResSchema.parse(data))
 
-      if (message)
+      if (message) {
         toast({
           title: "Profile Created",
           description: `Successfully created profile for ${message.name}`,
         })
+        router.push(`/${message.uniqueHref}`)
+      }
 
       if (error)
         toast({
@@ -167,30 +171,32 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
             />
           </div>
 
-          {defaultValues?.image && (
-            <Link href={defaultValues.image} target="_blank">
+          <div className="flex flex-col items-start">
+            {defaultValues?.image && (
+              <Link href={defaultValues.image} target="_blank">
+                <p
+                  className={cn(
+                    buttonVariants({ variant: "link" }),
+                    "cursor-pointer px-0"
+                  )}
+                >
+                  See current profile pic
+                </p>
+              </Link>
+            )}
+
+            {imgFile && (
               <p
                 className={cn(
                   buttonVariants({ variant: "link" }),
-                  "cursor-pointer px-0"
+                  "-mt-3 cursor-pointer px-0"
                 )}
+                onClick={() => changeImgPreviewModalVisibility()}
               >
-                See current profile pic
+                See preview
               </p>
-            </Link>
-          )}
-
-          {imgFile && (
-            <p
-              className={cn(
-                buttonVariants({ variant: "link" }),
-                "cursor-pointer px-0"
-              )}
-              onClick={() => changeImgPreviewModalVisibility()}
-            >
-              See preview
-            </p>
-          )}
+            )}
+          </div>
         </div>
 
         <FormField

@@ -8,8 +8,8 @@ import {
   CardTitle,
 } from "@/components/ui/Card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar"
-import { Button, buttonVariants } from "@/components/ui/Button"
-import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/Button"
+import { cn, getInitials } from "@/lib/utils"
 import { db } from "@/lib/db"
 import SocialIcon from "@/components/SocialIcon"
 import Link from "next/link"
@@ -31,8 +31,8 @@ const ProfileCard: React.FC<ProfileCardProps> = async ({ profile }) => {
       <Card>
         <div className="mt-5 flex items-center justify-center">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage src={profile.image as string} alt={profile.name} />
+            <AvatarFallback>{getInitials(profile.name)}</AvatarFallback>
           </Avatar>
         </div>
 
@@ -44,9 +44,17 @@ const ProfileCard: React.FC<ProfileCardProps> = async ({ profile }) => {
         <CardContent>
           <div className="grid gap-4">
             {mainLinks.map(({ name, href }) => (
-              <Button variant="outline" key={name}>
-                <Link href={href}>{name}</Link>
-              </Button>
+              <p
+                className={cn(
+                  buttonVariants({ variant: "outline" }),
+                  "cursor-pointer"
+                )}
+                key={name}
+              >
+                <Link href={href} target="_blank">
+                  {name}
+                </Link>
+              </p>
             ))}
           </div>
         </CardContent>

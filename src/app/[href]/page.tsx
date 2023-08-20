@@ -1,8 +1,9 @@
 import Icons from "@/components/Icons"
 import ProfileCard from "@/components/ProfileCard"
-import { Button } from "@/components/ui/Button"
+import { Button, buttonVariants } from "@/components/ui/Button"
 import { getCurrentUser } from "@/lib/auth"
 import { db } from "@/lib/db"
+import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
@@ -26,15 +27,16 @@ const ProfilePage: React.FC<{ params: { href: string } }> = async ({
       <ProfileCard profile={profile} />
 
       {dbUser.id === sessionUser?.id && (
-        <Button
-          variant={"outline"}
-          size={"icon"}
-          className="fixed bottom-4 right-4"
+        <p
+          className={cn(
+            buttonVariants({ variant: "outline", size: "icon" }),
+            "fixed bottom-4 right-4"
+          )}
         >
           <Link href="/edit">
             <Icons.edit className="h-4 w-4" />
           </Link>
-        </Button>
+        </p>
       )}
     </div>
   )

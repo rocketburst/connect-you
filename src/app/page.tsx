@@ -17,12 +17,9 @@ const Home: React.FC = () => {
           </p>
 
           <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:space-x-5 sm:space-y-0">
-            <Link
-              href="/sign-in"
-              className={cn(buttonVariants({ size: "lg" }))}
-            >
+            <a href="/sign-in" className={cn(buttonVariants({ size: "lg" }))}>
               Get Started
-            </Link>
+            </a>
 
             <Link
               href="/example"
